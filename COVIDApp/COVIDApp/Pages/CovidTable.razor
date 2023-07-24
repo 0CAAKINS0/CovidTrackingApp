@@ -1,0 +1,33 @@
+﻿@page "/table"
+@using CovidApp.Data
+@inject DataService DataService
+<h1>Covid Data By State</h1>
+@if(!isLoaded) {
+    <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12" Gap="2rem">
+        <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </RadzenStack>
+}
+else{
+    <RadzenDataGrid FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" AllowMultiColumnSorting="true" AllowSorting="true" AllowPaging="true" ShowPagingSummary="true" PageSize="50" Data="@covidData" TItem="CovidData">
+        <Columns>
+            <RadzenDataGridColumn TItem="CovidData" Property="date" Title="Date" FormatString="{0:d}" SortOrder="SortOrder.Descending" />
+            <RadzenDataGridColumn TItem="CovidData" Property="state" Title="State" />
+            <RadzenDataGridColumn TItem="CovidData" Property="positive" Title="Positive" SortOrder="SortOrder.Descending" Filterable="false" />
+            <RadzenDataGridColumn TItem="CovidData" Property="negative" Title="Negative" Filterable="false" />
+            <RadzenDataGridColumn TItem="CovidData" Property="total" Title="Total" Filterable="false" />
+            <RadzenDataGridColumn TItem="CovidData" Property="hospitalized" Title="Hospitalized" Filterable="false" />
+
+        </Columns>
+    </RadzenDataGrid>
+}
+@code {
+    IList<CovidData>? covidData;
+    bool isLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        covidData = await DataService.GetCovidData();
+        isLoaded = true;
+    }
+
+}
